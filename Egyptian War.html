@@ -1,0 +1,585 @@
+<!DOCTYPE HTML>
+<!--Matyas Fenyves-->
+<html>
+	<head>
+		<title>Egyptian War</title>
+		<style>
+			div#deck1
+			{
+				position:fixed ; 
+				top: 5% ; 
+				left: 10% ;
+			}
+			div#deck2
+			{
+				position:fixed ; 
+				top: 50% ; 
+				left: 10% ;
+			}
+			span#numBurned
+			{
+				position:fixed ; 
+				top: 60% ; 
+				left: 65% ;
+			}
+			img#img1
+			{
+				position:fixed ; 
+				top: 27.5% ; 
+				left: 10% ;
+				transform: rotate(270deg);-webkit-transform: rotate(270deg);-ms-transform: rotate(270deg);
+			}
+			img#img2
+			{
+				position:fixed ; 
+				top: 27.5% ; 
+				left: 10% ; 
+				transform: rotate(320deg);-webkit-transform: rotate(320deg);-ms-transform: rotate(320deg);
+			}
+			img#img3
+			{
+				position:fixed ; 
+				top: 27.5% ; 
+				left: 10% ; 
+			}
+			img#burnedDeck1
+			{
+				position:fixed ; 
+				top: 27.5% ; 
+				left: 65% ;
+
+			}
+			img#burnedDeck2
+			{
+				position:fixed ; 
+				top: 27.5% ; 
+				left: 65% ; 
+				transform: rotate(60deg);-webkit-transform: rotate(60deg);-ms-transform: rotate(60deg);
+			}
+			img#burnedDeck3
+			{
+				position:fixed ; 
+				top: 27.5% ; 
+				left: 65% ; 
+				transform: rotate(120deg);-webkit-transform: rotate(120deg);-ms-transform: rotate(120deg);
+			}
+			span#showEvents
+			{
+				position:fixed ; 
+				top: 30% ; 
+				left: 30% ;
+				margin-right: 50% ; 
+				font-size: 30pt ;
+			}
+			body
+			{
+				background-color: #669900 ;
+				color: #990000 ;
+			}
+		</style>
+		<script type = "text/javascript" src = "playingcards.js">
+		</script>
+		<script>
+			window.addEventListener("keydown", playerSlap, false);
+			window.addEventListener("keydown", placeCard, false);
+			
+			
+			
+			var BACK = "back-red-75-1.png" ;
+			var BLANK = "CardBlank.png" ;
+			var humanDeck, cpuDeck ;
+			var playedCards = new Array() ;
+			var burnDeck = new Array() ;
+			var turn = 0 ;
+			var ACE = 1, JACK = 11, QUEEN = 12, KING = 13, NUMBER = 0 ;
+			var cardPlayed = 0 ;
+			//var topPlayedCard = extractCardData(playedCards[0],RANK) ;
+			var HUMAN = 0, CPU = 1 ;
+			var winner = -1 ;
+			var playerPlayed = -1 ;
+			
+			
+			function dealCards()
+			{
+				humanDeck = generateStandardDeck() ;
+				humanDeck = shuffle(humanDeck) ;
+				cpuDeck = humanDeck.splice(0, humanDeck.length/2) ;
+				
+			}
+			function gamePlay()
+			{
+				setTimeout("cpuPlay()",1000) ;
+				checkCard() ;
+				checkSlap() ;
+				
+				
+			}
+			
+			function cpuPlay()
+			{
+				//code for cpu placing cards(delay)
+				checkCard() ;
+				checkCombo() ;
+				checkSlap() ;
+				
+				if(cpuDeck.length > 0)
+				{
+					var card = dealCard(cpuDeck) ;
+				
+					if(turn == 1 && cardPlayed == NUMBER)
+					{
+						//var card = dealCard(cpuDeck) ;
+						insertCard(playedCards, card) ;
+						topPlayedCard = extractCardData(playedCards[0],RANK) ;
+						turn = 0 ;
+						display() ;
+					}
+					if(turn == 1)
+					{
+						//var card = dealCard(cpuDeck) ;
+						insertCard(playedCards, card) ;
+						topPlayedCard = extractCardData(playedCards[0],RANK) ;
+						turn = 0 ;
+						display() ;
+					}
+					
+					
+						//var card = dealCard(cpuDeck) ;
+						//insertCard(playedCards, card) ;
+						
+						if(turn == 1 && topPlayedCard == JACK)
+						{
+							insertCard(playedCards, card) ;
+							topPlayedCard = extractCardData(playedCards[0],RANK) ;
+							if(topPlayedCard == JACK || topPlayedCard == QUEEN || topPlayedCard == KING || topPlayedCard == ACE)
+							{
+								turn = 0 ;
+							}
+							display() ;
+						}
+						if(turn == 1 && topPlayedCard == QUEEN)
+						{
+							for(i = 0 ; i < 2 ; i++)
+							{
+								var card = dealCard(cpuDeck) ;
+								insertCard(playedCards, card) ;
+								topPlayedCard = extractCardData(playedCards[0],RANK) ;
+								display() ;
+								if(topPlayedCard == JACK || topPlayedCard == QUEEN || topPlayedCard == KING || topPlayedCard == ACE)
+								{
+									turn = 0 ;
+									break ;
+								}
+								display() ;
+							}
+						}
+						if(turn == 1 && topPlayedCard == KING)
+						{
+							for(i = 0 ; i < 3 ; i++)
+							{
+								var card = dealCard(cpuDeck) ;
+								insertCard(playedCards, card) ;
+								topPlayedCard = extractCardData(playedCards[0],RANK) ;
+								display() ;
+								if(topPlayedCard == JACK || topPlayedCard == QUEEN || topPlayedCard == KING || topPlayedCard == ACE)
+								{
+									turn = 0 ;
+									break ;
+								}
+								display() ;
+							}
+						}
+						if(turn == 1 && topPlayedCard == ACE)
+						{
+							for(i = 0 ; i < 4 ; i++)
+							{
+								var card = dealCard(cpuDeck) ;
+								insertCard(playedCards, card) ;
+								
+								topPlayedCard = extractCardData(playedCards[0],RANK) ;
+								display() ;
+								if(topPlayedCard == JACK || topPlayedCard == QUEEN || topPlayedCard == KING || topPlayedCard == ACE)
+								{
+									turn = 0 ;
+									break ;
+								}
+								display() ;
+							}
+							display() ;
+						}
+					
+					message.innerHTML = "The computer played" ;
+					playerPlayed = CPU ;
+				}
+				checkCombo() ;
+				checkCard() ;
+				checkSlap() ;
+				checkTakes() ;
+				roundWins() ;
+				display() ;
+			}
+			function placeCard(enter)
+			{
+				checkCard() ;
+				if(enter.keyCode == "13") 
+				{
+					if(humanDeck.length > 0)
+					{
+						if(topPlayedCard == NUMBER)
+						{
+							//code for human playing card
+							
+							var card = dealCard(humanDeck) ;
+							insertCard(playedCards, card) ;
+							topPlayedCard = extractCardData(playedCards[0],RANK) ;
+							
+							turn = 1 ;
+						}
+						if(topPlayedCard == JACK)
+						{
+							insertCard(playedCards, card) ;
+							topPlayedCard = extractCardData(playedCards[0],RANK) ;
+							turn = 1 ;
+						}
+						if(topPlayedCard == QUEEN)
+						{
+							insertCard(playedCards, card) ;
+							topPlayedCard = extractCardData(playedCards[0],RANK) ;
+							if(topPlayedCard == JACK || topPlayedCard == QUEEN || topPlayedCard == KING || topPlayedCard == ACE)
+							{
+								turn = 1 ;
+							}
+						}
+						if(topPlayedCard == KING)
+						{
+							insertCard(playedCards, card) ;
+							topPlayedCard = extractCardData(playedCards[0],RANK) ;
+							if(topPlayedCard == JACK || topPlayedCard == QUEEN || topPlayedCard == KING || topPlayedCard == ACE)
+							{
+								turn = 1 ;
+							}
+						}
+						if(topPlayedCard == ACE)
+						{
+							insertCard(playedCards, card) ;
+							topPlayedCard = extractCardData(playedCards[0],RANK) ;
+							if(topPlayedCard == JACK || topPlayedCard == QUEEN || topPlayedCard == KING || topPlayedCard == ACE)
+							{
+								turn = 1 ;
+							}
+						}
+						
+						message.innerHTML = "You played" ;
+					}
+					gamePlay() ;
+					checkCombo() ;
+					checkCard() ;
+					checkTakes() ;
+					roundWins() ;
+					display() ;
+				
+				}
+			}
+			function checkCard()
+			{
+				//code to check if the card was face or ace
+				if(playedCards.length == 0)
+					return ;
+				if(topPlayedCard == 1)
+				{
+					cardPlayed = ACE ;
+				}
+				else
+				{
+					if(topPlayedCard == 11)
+					{
+						cardPlayed = JACK ;
+					}
+					else
+					{
+						if(topPlayedCard == 12)
+						{
+							cardPlayed = QUEEN ;
+						}
+						else
+						{
+							if(topPlayedCard == 13)
+							{
+								cardPlayed = KING ;
+							}
+							else
+							{
+								cardPlayed = NUMBER ;
+							}
+						}
+					}
+				}
+				if(playedCards.length < 2)
+					return ;
+				if(extractCardData(playedCards[1],RANK) != JACK && extractCardData(playedCards[1],RANK) != QUEEN && extractCardData(playedCards[1],RANK) != KING && extractCardData(playedCards[1],RANK) != ACE)
+				{
+					card2 = NUMBER ;
+				}
+				if(playedCards.length < 3)
+					return ;
+				if(extractCardData(playedCards[2],RANK) != JACK && extractCardData(playedCards[2],RANK) != QUEEN && extractCardData(playedCards[2],RANK) != KING && extractCardData(playedCards[2],RANK) != ACE)
+				{
+					card3 = NUMBER ;
+				}
+				if(playedCards.length < 4)
+					return ;
+				if(extractCardData(playedCards[3],RANK) != JACK && extractCardData(playedCards[3],RANK) != QUEEN && extractCardData(playedCards[3],RANK) != KING && extractCardData(playedCards[3],RANK) != ACE)
+				{
+					card4 = NUMBER ;
+				}
+				
+				
+				
+				display() ;
+			}
+			function storedVariables()
+			{
+				message = document.getElementById("showEvents") ;
+				play1 = document.getElementById("img1") ;
+				play2 = document.getElementById("img2") ;
+				play3 = document.getElementById("img3") ;
+				burn1 = document.getElementById("burnedDeck1") ;
+				burn2 = document.getElementById("burnedDeck2") ;
+				burn3 = document.getElementById("burnedDeck3") ;
+				Cards1 = document.getElementById("numCards1") ;
+				Cards2 = document.getElementById("numCards2") ;
+				cardback1 = document.getElementById("deck1") ;
+				cardback2 = document.getElementById("deck2") ;
+				CardsBurned = document.getElementById("numBurned") ;
+				
+				dealCards() ;
+				
+			}
+			function playerSlap(space) 
+			{
+				if(space.keyCode == "32") 
+				{
+					
+					if(checkCombo() == 0)
+					{
+						humanDeck = humanDeck.concat(playedCards) ;
+						humanDeck = humanDeck.concat(burnDeck) ;
+						playedCards = new Array() ;
+						burnDeck = new Array() ;
+						
+					}
+					else
+					{
+						//put card into burn deck
+						var card = dealCard(humanDeck) ;
+						insertCard(burnDeck, card) ;
+					}
+					
+					message.innerHTML = "You slapped" ;
+					turn = 0 ;
+				}
+				setTimeout("display()", 500) ;
+				
+			}
+			function cpuSlap()
+			{
+				
+				cpuDeck = cpuDeck.concat(playedCards) ;
+				cpuDeck = cpuDeck.concat(burnDeck) ;
+				playedCards = new Array() ;
+				burnDeck = new Array() ;
+				message.innerHTML = "CPU slapped" ;
+				turn = 1 ;
+				setTimeout("display()", 500) ;
+				setTimeout("cpuPlay()", 1500) ;
+					
+			}
+			function checkSlap()
+			{
+				if(checkCombo() == 0)
+					{
+						setTimeout("cpuSlap()", 750) ;
+						
+					}
+			}
+			function checkCombo()
+			{
+				if(playedCards.length > 1)
+				{
+					if(topPlayedCard == extractCardData(playedCards[1],RANK))
+						return 0 ;
+				}
+				else
+					return 1 ;
+				if(playedCards.length > 2)
+				{
+					if(topPlayedCard == extractCardData(playedCards[2],RANK))
+						return 0 ;
+					if(topPlayedCard == (extractCardData(playedCards[2],RANK)) - 1 && topPlayedCard == (extractCardData(playedCards[2],RANK)) - 2)
+						return 0 
+					if(topPlayedCard == (extractCardData(playedCards[2],RANK)) + 1 && topPlayedCard == (extractCardData(playedCards[2],RANK)) + 2)
+						return 0 ;
+				}
+				else
+					return 1 ;
+			}
+			function display()
+			{
+				Cards1.innerHTML = humanDeck.length + " Cards" ;
+				Cards2.innerHTML = cpuDeck.length + " Cards" ;
+				CardsBurned.innerHTML = burnDeck.length + " Cards" ;
+				if(playedCards.length > 2)
+					play1.src = extractCardData(playedCards[2],IMAGE) ;
+				else
+					play1.src = BLANK ;
+				if(playedCards.length > 1)
+					play2.src = extractCardData(playedCards[1],IMAGE) ;
+				else
+					play2.src = BLANK ;
+				if(playedCards.length > 0)
+					play3.src = extractCardData(playedCards[0],IMAGE) ;
+				else
+					play3.src = BLANK ;
+				if(burnDeck.length > 2)
+					burn1.src = extractCardData(burnDeck[2],IMAGE) ;
+				else
+					burn1.src = BLANK ;
+				if(burnDeck.length > 1)
+					burn2.src = extractCardData(burnDeck[1],IMAGE) ;
+				else
+					burn2.src = BLANK ;
+				if(burnDeck.length > 0)
+					burn3.src = extractCardData(burnDeck[0],IMAGE) ;
+				else
+					burn3.src = BLANK ;
+				if(humanDeck.length > 0)
+				{
+					cardback1.src = BACK ;
+				}
+				else
+				{
+					cardback1.src = BLANK ;
+				}
+				if(cpuDeck.length > 0)
+				{
+					cardback2.src = BACK ;
+				}
+				else
+				{
+					cardback2.src = BLANK ;
+				}
+			}
+			function checkTakes()
+			{
+				checkCard() ;
+				if(playedCards.length < 2)
+					return ;
+				if(extractCardData(playedCards[1],RANK) == JACK && cardPlayed == NUMBER)
+				{
+					if(playerPlayed == HUMAN)
+					{
+						//humanDeck = humanDeck.concat(playedCards) ;
+						//humanDeck = humanDeck.concat(burnDeck) ;
+						return 0 ;
+					}
+					if(playerPlayed == CPU)
+					{
+						//cpuDeck = cpuDeck.concat(playedCards) ;
+						//cpuDeck = cpuDeck.concat(burnDeck) ;
+						return 1 ;
+					}
+				}
+				if(playedCards.length < 3)
+					return ;
+				if(extractCardData(playedCards[2],RANK) == QUEEN && extractCardData(playedCards[1],RANK) == NUMBER && cardPlayed == NUMBER)
+				{
+					if(playerPlayed == HUMAN)
+					{
+						//humanDeck = humanDeck.concat(playedCards) ;
+						//humanDeck = humanDeck.concat(burnDeck) ;
+						return 0 ;
+					}
+					if(playerPlayed == CPU)
+					{
+						//cpuDeck = cpuDeck.concat(playedCards) ;
+						//cpuDeck = cpuDeck.concat(burnDeck) ;
+						return 1 ;
+					}
+				}
+				if(playedCards.length < 4)
+					return ;
+				if(extractCardData(playedCards[3],RANK) == KING && extractCardData(playedCards[2],RANK) == NUMBER && extractCardData(playedCards[1],RANK) == NUMBER && cardPlayed == NUMBER)
+				{
+					if(playerPlayed == HUMAN)
+					{
+						//humanDeck = humanDeck.concat(playedCards) ;
+						//humanDeck = humanDeck.concat(burnDeck) ;
+						return 0 ;
+					}
+					if(playerPlayed == CPU)
+					{
+						//cpuDeck = cpuDeck.concat(playedCards) ;
+						//cpuDeck = cpuDeck.concat(burnDeck) ;
+						return 1 ;
+					}
+				}
+				if(playedCards.length < 5)
+					return ;
+				if(extractCardData(playedCards[4],RANK) == ACE && extractCardData(playedCards[3],RANK) == NUMBER && extractCardData(playedCards[2],RANK) == NUMBER && extractCardData(playedCards[1],RANK) == NUMBER && cardPlayed == NUMBER)
+				{
+					if(playerPlayed == HUMAN)
+					{
+						//humanDeck = humanDeck.concat(playedCards) ;
+						//humanDeck = humanDeck.concat(burnDeck) ;
+						return 0 ;
+					}
+					if(playerPlayed == CPU)
+					{
+						//cpuDeck = cpuDeck.concat(playedCards) ;
+						//cpuDeck = cpuDeck.concat(burnDeck) ;
+						return 1 ;
+					}
+					
+				}
+				//FIGURE OUT HOW TO GET THE PREVIOUS CARDS (1-4) INFO TO SEE IF THEY ARE NUMBERS OR NOT
+			}
+			function roundWins()
+			{
+				if(checkTakes() == 0)
+				{
+					cpuDeck = cpuDeck.concat(playedCards) ;
+					cpuDeck = cpuDeck.concat(burnDeck) ;
+					playedCards = new Array() ;
+					burnDeck = new Array() ;
+				}
+				if(checkTakes() == 1)
+				{
+					humanDeck = humanDeck.concat(playedCards) ;
+					humanDeck = humanDeck.concat(burnDeck) ;
+					playedCards = new Array() ;
+					burnDeck = new Array() ;
+				}
+			}
+		</script>
+	</head>
+	<body onload = "storedVariables();">
+		<div id = "deck1" >
+			<img id = "cpuDeck" src = "back-red-75-1.png" /><span id = "numCards2">26 Cards</span>
+		</div>
+		<div id = "centerPile">
+			<img id = "img1" src = "CardBlank.png" />
+			<img id = "img2" src = "CardBlank.png" />
+			<img id = "img3" src = "CardBlank.png" />
+		</div>
+		<span id = "showEvents" >Begin Game!</span>
+		<div id = "deck2" >
+			<img id = "playerDeck" src = "back-red-75-1.png" /><span id = "numCards1">26 Cards</span>
+		</div>
+		<div id = "burn">
+			<img id = "burnedDeck1" src = "CardBlank.png" />
+			<img id = "burnedDeck2" src = "CardBlank.png" />
+			<img id = "burnedDeck3" src = "CardBlank.png" />
+			<span id = "numBurned">0 Cards</span>
+		</div>
+	</body>
+</html>
